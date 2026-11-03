@@ -1,0 +1,6 @@
+{
+  "name": "Nexora Customer Operations Academy",
+  "description": "Professional enterprise simulation training platform for remote customer support and operations specialists.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
