@@ -211,7 +211,7 @@ export const TicketDesk: React.FC = () => {
                 <span className="font-bold text-black uppercase tracking-wide">
                   Case Activity Timeline
                 </span>
-                <span className="text-neutral-500">Assigned: {selectedTicket.assignedAgent || 'Alex Mercer'}</span>
+                <span className="text-neutral-500">Assigned: {selectedTicket.assignedAgent || currentUser.name}</span>
               </div>
 
               <div className="p-4 space-y-3 max-h-[380px] overflow-y-auto">

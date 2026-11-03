@@ -32,8 +32,11 @@ export const Sidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="w-full lg:w-60 bg-white border-b lg:border-b-0 lg:border-r border-neutral-200 shrink-0">
-      <div className="p-3 space-y-0.5 overflow-x-auto lg:overflow-x-visible flex lg:flex-col gap-1 lg:gap-0.5">
+    <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-neutral-200/80 shrink-0">
+      <div className="p-3 lg:p-4 space-y-1 overflow-x-auto lg:overflow-x-visible flex lg:flex-col gap-1.5 lg:gap-1">
+        <div className="hidden lg:block px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+          Navigation Menu
+        </div>
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -42,22 +45,24 @@ export const Sidebar: React.FC = () => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center justify-between px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors text-left ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all duration-150 text-left ${
                 isActive
-                  ? 'bg-neutral-900 text-white font-semibold'
-                  : 'text-black hover:bg-neutral-100'
+                  ? 'bg-neutral-900 text-white font-semibold shadow-xs'
+                  : 'text-neutral-700 hover:text-neutral-950 hover:bg-neutral-100/80'
               }`}
             >
-              <div className="flex items-center gap-2.5">
-                <Icon className="w-3.5 h-3.5 shrink-0 opacity-70" />
+              <div className="flex items-center gap-3">
+                <Icon className={`w-4 h-4 shrink-0 transition-colors ${
+                  isActive ? 'text-white' : 'text-neutral-500'
+                }`} />
                 <span className="truncate">{item.label}</span>
               </div>
 
               {item.badge && (
-                <span className={`text-[10px] font-mono ml-2 ${
-                  isActive ? 'text-neutral-300' : 'text-neutral-500'
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md ml-2 ${
+                  isActive ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-600'
                 }`}>
-                  [{item.badge}]
+                  {item.badge}
                 </span>
               )}
             </button>

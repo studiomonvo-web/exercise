@@ -73,7 +73,7 @@ export const CertificateModal: React.FC = () => {
             {currentUser.name}
           </div>
           <p className="text-xs text-neutral-700 font-mono pt-1">
-            Trainee ID: {currentUser.id} • Cohort 14 (Americas Remote Operations)
+            Trainee ID: {currentUser.id} • {currentUser.cohort || 'Cohort 14 (Americas Remote Operations)'}
           </p>
         </div>
 

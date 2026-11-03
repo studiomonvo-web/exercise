@@ -95,6 +95,8 @@ interface AcademyContextType {
   updateInternshipDay: (dayNumber: number, partialDay: Partial<InternshipDay>) => void;
   toggleInternshipTask: (dayNumber: number, taskId: string) => void;
   resetAllData: () => void;
+  updateUserProfile: (updatedFields: Partial<UserProfile>, targetRole?: UserRole) => void;
+  resetUserProfile: (targetRole?: UserRole) => void;
   
   // Calculated Metrics
   metrics: {
@@ -123,6 +125,16 @@ export const AcademyProvider: React.FC<{ children: ReactNode }> = ({ children })
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+
+  // User Profiles state (customizable and persisted)
+  const [userProfiles, setUserProfiles] = useState<Record<UserRole, UserProfile>>(() => {
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_profiles`);
+      return saved ? JSON.parse(saved) : ROLE_PROFILES;
+    } catch {
+      return ROLE_PROFILES;
+    }
+  });
 
   // Initial State loaded from localStorage if present
   const [assignments, setAssignments] = useState<Assignment[]>(() => {
@@ -178,11 +190,34 @@ export const AcademyProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.setItem(`${STORAGE_KEY}_internship`, JSON.stringify(internshipDays));
   }, [internshipDays]);
 
-  const currentUser = ROLE_PROFILES[role];
+  useEffect(() => {
+    localStorage.setItem(`${STORAGE_KEY}_profiles`, JSON.stringify(userProfiles));
+  }, [userProfiles]);
+
+  const currentUser = userProfiles[role];
   const courses = COURSES_DATA;
 
   const setRole = (newRole: UserRole) => {
     setRoleState(newRole);
+  };
+
+  const updateUserProfile = (updatedFields: Partial<UserProfile>, targetRole?: UserRole) => {
+    const r = targetRole || role;
+    setUserProfiles(prev => ({
+      ...prev,
+      [r]: {
+        ...prev[r],
+        ...updatedFields
+      }
+    }));
+  };
+
+  const resetUserProfile = (targetRole?: UserRole) => {
+    const r = targetRole || role;
+    setUserProfiles(prev => ({
+      ...prev,
+      [r]: ROLE_PROFILES[r]
+    }));
   };
 
   // Submit an assignment
@@ -369,10 +404,12 @@ export const AcademyProvider: React.FC<{ children: ReactNode }> = ({ children })
     localStorage.removeItem(`${STORAGE_KEY}_tickets`);
     localStorage.removeItem(`${STORAGE_KEY}_customers`);
     localStorage.removeItem(`${STORAGE_KEY}_internship`);
+    localStorage.removeItem(`${STORAGE_KEY}_profiles`);
     setAssignments(INITIAL_ASSIGNMENTS);
     setTickets(INITIAL_TICKETS);
     setCustomers(INITIAL_CUSTOMERS);
     setInternshipDays(INITIAL_INTERNSHIP_DAYS);
+    setUserProfiles(ROLE_PROFILES);
   };
 
   // Rigorous Calculated Metrics (derived strictly from real state)
@@ -453,6 +490,8 @@ export const AcademyProvider: React.FC<{ children: ReactNode }> = ({ children })
         updateInternshipDay,
         toggleInternshipTask,
         resetAllData,
+        updateUserProfile,
+        resetUserProfile,
         metrics
       }}
     >

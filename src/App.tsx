@@ -47,7 +47,7 @@ const AcademyContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 flex flex-col font-sans text-black">
+    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans text-neutral-950 antialiased">
       <Header />
       <div className="flex-1 flex flex-col lg:flex-row max-w-7xl w-full mx-auto">
         <Sidebar />

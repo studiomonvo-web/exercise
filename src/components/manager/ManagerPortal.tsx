@@ -145,7 +145,7 @@ export const ManagerPortal: React.FC = () => {
                 </span>
                 <h3 className="text-sm font-bold text-black">{selectedAssignment.title}</h3>
                 <p className="text-xs text-neutral-600 mt-0.5">
-                  Trainee: Alex Mercer (NX-TR-4091) • {selectedAssignment.courseTitle}
+                  Trainee: {currentUser.name} ({currentUser.id}) • {selectedAssignment.courseTitle}
                 </p>
               </div>
 

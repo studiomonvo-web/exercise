@@ -15,7 +15,7 @@ interface CourseDetailModalProps {
 }
 
 export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({ course, onClose }) => {
-  const { assignments, submitAssignment, createAssignmentFromCourse, setActiveTab } = useAcademy();
+  const { assignments, submitAssignment, createAssignmentFromCourse, setActiveTab, currentUser } = useAcademy();
 
   const existingAssignment = assignments.find(a => a.courseId === course.id);
   const assignment = existingAssignment || createAssignmentFromCourse(course.id);
@@ -50,7 +50,7 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({ course, on
       setAttachedFileName(`${course.id.toLowerCase()}_analisis_data.xlsx`);
     } else {
       setResponseContent(
-        `MEMORANDUM INTERNAL OPERASIONAL\nKEPADA: Sarah Jenkins, Direktur Operasional & QA Lead\nDARI: Alex Mercer, Spesialis Operasional Remote (NX-TR-4091)\nTANGGAL: ${new Date().toISOString().split('T')[0]}\nHAL: Penyelesaian Tugas ${course.id} - ${course.title}\n\nDengan ini dilaporkan bahwa instruksi kerja untuk penugasan ${course.practicalAssignment.taskTitle} telah diselesaikan secara tuntas sesuai dengan ${course.sopReference}.\n\nDeliverable siap untuk diaudit dan ditinjau pada antrean manajer.`
+        `MEMORANDUM INTERNAL OPERASIONAL\nKEPADA: Sarah Jenkins, Direktur Operasional & QA Lead\nDARI: ${currentUser.name}, Spesialis Operasional Remote (${currentUser.id})\nTANGGAL: ${new Date().toISOString().split('T')[0]}\nHAL: Penyelesaian Tugas ${course.id} - ${course.title}\n\nDengan ini dilaporkan bahwa instruksi kerja untuk penugasan ${course.practicalAssignment.taskTitle} telah diselesaikan secara tuntas sesuai dengan ${course.sopReference}.\n\nDeliverable siap untuk diaudit dan ditinjau pada antrean manajer.`
       );
       setAttachedFileName(`${course.id.toLowerCase()}_memo_operasional.docx`);
     }
@@ -75,13 +75,13 @@ export const CourseDetailModal: React.FC<CourseDetailModalProps> = ({ course, on
   const isApproved = assignment.status === 'Approved' || assignment.status === 'Completed';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 overflow-y-auto">
-      <div className="bg-white border border-neutral-300 w-full max-w-4xl max-h-[90vh] flex flex-col my-auto overflow-hidden text-black">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl border border-neutral-200 w-full max-w-4xl max-h-[90vh] flex flex-col my-auto overflow-hidden text-neutral-900 animate-in fade-in zoom-in-95 duration-150">
         
         {/* Header - clean black background, white text */}
-        <div className="px-6 py-4 bg-black text-white flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 bg-neutral-950 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs font-bold border border-neutral-600 px-2 py-0.5 text-white">
+            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded-md bg-neutral-800 text-white">
               {course.id}
             </span>
             <div>
@@ -377,10 +377,10 @@ export const CourseList: React.FC = () => {
     <div className="space-y-5">
       {/* Top Banner with Indonesian Slug in Top Right */}
       <div className="bg-white border border-neutral-200 p-5 space-y-4">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-neutral-200">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-neutral-100">
           <div>
-            <h1 className="text-lg font-bold text-black uppercase tracking-tight">Nexora 50-Course Curriculum</h1>
-            <p className="text-xs text-neutral-600">10 Operations Departments with workplace assignments, real datasets & manager grading</p>
+            <h1 className="text-xl font-extrabold text-neutral-950 tracking-tight">Nexora 50-Course Curriculum</h1>
+            <p className="text-xs text-neutral-500 font-medium mt-1">10 Operations Departments with workplace assignments, real datasets & manager grading</p>
           </div>
 
           {/* Indonesian Slug in Top Right */}
@@ -391,13 +391,13 @@ export const CourseList: React.FC = () => {
 
         {/* Search & Level Filter Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-          <div className="flex items-center gap-1.5 overflow-x-auto">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             <button
               onClick={() => setSelectedLevel('all')}
-              className={`px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedLevel === 'all'
-                  ? 'bg-black text-white'
-                  : 'text-black hover:bg-neutral-100 border border-neutral-200'
+                  ? 'bg-neutral-950 text-white shadow-xs'
+                  : 'text-neutral-700 hover:bg-neutral-100 border border-neutral-200'
               }`}
             >
               All 50 Courses
@@ -406,10 +406,10 @@ export const CourseList: React.FC = () => {
               <button
                 key={lvl}
                 onClick={() => setSelectedLevel(lvl)}
-                className={`px-2.5 py-1 text-xs font-medium whitespace-nowrap transition-colors ${
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
                   selectedLevel === lvl
-                    ? 'bg-black text-white font-semibold'
-                    : 'text-black hover:bg-neutral-100 border border-neutral-200'
+                    ? 'bg-neutral-950 text-white font-semibold shadow-xs'
+                    : 'text-neutral-700 hover:bg-neutral-100 border border-neutral-200'
                 }`}
               >
                 Level {lvl < 10 ? `0${lvl}` : lvl}
@@ -417,20 +417,20 @@ export const CourseList: React.FC = () => {
             ))}
           </div>
 
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-72">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari kursus / topik..."
-              className="w-full px-3 py-1.5 border border-neutral-300 text-xs text-black focus:outline-hidden focus:border-black"
+              className="w-full px-3.5 py-2 rounded-xl border border-neutral-300 text-xs text-neutral-950 focus:outline-hidden focus:ring-2 focus:ring-neutral-950/10 focus:border-neutral-950 shadow-2xs transition-all"
             />
           </div>
         </div>
       </div>
 
       {/* Course Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filteredCourses.map(course => {
           const status = getCourseStatus(course.id);
 
@@ -438,37 +438,43 @@ export const CourseList: React.FC = () => {
             <div
               key={course.id}
               onClick={() => setActiveCourseModal(course)}
-              className="bg-white border border-neutral-200 p-4 hover:border-black transition-colors cursor-pointer flex flex-col justify-between"
+              className="bg-white rounded-2xl border border-neutral-200/80 p-5 hover:border-neutral-900 transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-xs hover:shadow-md hover:-translate-y-0.5"
             >
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-black">
+                  <span className="font-mono text-xs font-bold text-neutral-950 px-2 py-0.5 bg-neutral-100 rounded-md">
                     {course.id}
                   </span>
-                  <span className="text-[10px] font-mono border border-neutral-300 px-1.5 py-0.5 text-black uppercase">
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md font-semibold uppercase ${
+                    status === 'Approved' || status === 'Completed'
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      : status === 'Submitted' || status === 'Under Review'
+                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                      : 'bg-neutral-100 text-neutral-700 border border-neutral-200'
+                  }`}>
                     {status}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-neutral-500 tracking-wider block">
-                    Level {course.level < 10 ? `0${course.level}` : course.level} / {course.department}
+                  <span className="text-[10px] uppercase font-bold text-neutral-400 tracking-wider block">
+                    Level {course.level < 10 ? `0${course.level}` : course.level} • {course.department}
                   </span>
-                  <h3 className="text-xs font-bold text-black line-clamp-2 mt-0.5">
+                  <h3 className="text-sm font-bold text-neutral-950 line-clamp-2 mt-0.5 tracking-tight">
                     {course.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-neutral-700 line-clamp-3 leading-relaxed font-normal">
+                <p className="text-xs text-neutral-600 line-clamp-3 leading-relaxed font-normal">
                   {course.summary}
                 </p>
               </div>
 
-              <div className="pt-3 mt-3 border-t border-neutral-100 flex items-center justify-between text-xs">
-                <span className="truncate max-w-44 text-[11px] text-neutral-600">
+              <div className="pt-3.5 mt-3.5 border-t border-neutral-100 flex items-center justify-between text-xs">
+                <span className="truncate max-w-44 text-[11px] text-neutral-500 font-medium">
                   {course.practicalAssignment.taskTitle}
                 </span>
-                <span className="font-bold text-black">
+                <span className="font-bold text-neutral-950 hover:underline">
                   Buka Tugas →
                 </span>
               </div>
